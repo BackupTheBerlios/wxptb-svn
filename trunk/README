@@ -2,11 +2,13 @@
                              ==== README ====
 
                                -- wxPTB --
-                              Version 0.0.
+                              Version 0.1.0
 -------------------------------------------------------------------------------
 
 DESCRIPTION
 ~~~~~~~~~~~
+It load the current public-timestamp-block from publictimestamp.org and
+store it in a file to use it e.g. as a signature in an e-mail software.
 
 LICENSE
 ~~~~~~~
@@ -28,8 +30,13 @@ Feel free to contact the project people and the community over this forums!
 	- wxPTB-general
 	  Everything related to wxPTB! Support, Help, Questions, Development, etc
 
-The forums can be used/accessed as newsgroup, mailinglist, newsfeed or
-web-forum. Please look on <http://wxptb.berlios.de> for more detailes.
+The forums can be used/accessed
+    - as newsgroup <nntp://gmane.org/gmane.sysutils.wxcron.general>
+    - mailinglist <mailto:wxptb-general@lists.berlios.de>
+    - newsfeed <http://rss.gmane.org/topics/complete/gmane.comp.sysutils.wxptb.general>
+    - web-forum <http://news.gmane.org/gmane.comp.sysutils.wxptb.general>
+
+Please look on <http://wxptb.berlios.de> for more detailes.
 The last possibility is to send e-mail to blackfisk@web.de.
 
 DEVELOPMENT
@@ -37,7 +44,7 @@ DEVELOPMENT
 Everyone is welcome to the project team! There is no need to be a software
 developer because there are a lot of other usefull things that can be done!
 The project need users they improve wxPTB with submiting feauter requests,
-reporting bugs and telling everything that is usefull to wxCron.
+reporting bugs and telling everything that is usefull to wxPTB.
 Please see the project website <http://www.wxptb.berlios.de> for more
 detailes and feel free to contact the project.
 

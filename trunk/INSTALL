@@ -2,7 +2,7 @@
                              ==== INSTALL ====
 
                                -- wxPTB --
-                              Version 0.0.
+                              Version 0.1.0
 -------------------------------------------------------------------------------
 
 There is no need for a install routine. Just unpack all files to a directory
@@ -19,7 +19,6 @@ FILE & DIRECTORY LISTING
  CREDITS        - all persons, projects and institutions
                   related to this project
  CHANGELOG      - differences between the wxPTB versions
- HELP			- help file for wxPTB
  wxPTB.exe  	- the windows (32bit) binary
  graphic/       - icons and other graphic stuff for wxPTB
 

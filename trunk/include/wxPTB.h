@@ -25,9 +25,9 @@
 
 #define PTB_APP_NAME                "wxPTB"
 #define PTB_VERSION_MAJOR           0
-#define PTB_VERSION_MINOR           0
+#define PTB_VERSION_MINOR           1
 #define PTB_VERSION_RELEASE         0
-#define PTB_VERSION_EXTENSION       "alpha"
+#define PTB_VERSION_EXTENSION       ""
 #define PTB_AUTHOR                  "Christian Buhtz"
 
 #define PTB_URL_TIMESTAMP           "http://publictimestamp.org/rest/v1.0/publictimestamp-rest-v1.0.pl?pt=getlatestptb"

@@ -2,10 +2,12 @@
                              ==== CREDITS ====
 
                                -- wxPTB --
-                              Version 0.0.1
+                              Version 0.1.0
 -------------------------------------------------------------------------------
 
 Thanks to...
+
+- Jan Kechel - The maintainer of <http://publictimestamp.org>
 
 - the wxWidget community and the maintainers
   Cross-Platform GUI Library <http://www.wxwidgets.org>
