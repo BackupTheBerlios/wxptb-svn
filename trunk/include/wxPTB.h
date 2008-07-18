@@ -37,7 +37,7 @@
 #define PTB_HASH_ALL                "all"
 
 #define PTB_LOG_MAXSIZE             1024*1024
-#define PTB_LOG_FILE                "ptb.log"
+#define PTB_LOG_FILE                "wxPTB.log"
 
 #define PTB_ERR_URL                 "Can not create the URL!"
 #define PTB_ERR_STREAM              "Can not create the input stream!\nMaybe you are offline?\nPlease check your internet connection!"
