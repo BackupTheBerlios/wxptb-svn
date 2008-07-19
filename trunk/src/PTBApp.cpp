@@ -38,12 +38,13 @@
 
 IMPLEMENT_APP(PTBApp);
 
+/*static*/ PTBApp* PTBApp::pInstance_ = NULL;
 
 PTBApp::PTBApp ()
       : bDoExit_(false),
         log_(PTB_LOG_FILE, wxFile::write_append)
 {
-    CareLogSize();
+    pInstance_ = this;
 
     Log(wxString::Format("\n%s started...", GetFullApplicationName()));
 }
@@ -58,9 +59,9 @@ void PTBApp::SetDoExit (bool bDoExit /*= true*/)
     bDoExit_ = bDoExit;
 }
 
-void PTBApp::Log (const wxString& strLogmessage, bool bShowLogMessage /*= false*/)
+/*static*/ void PTBApp::Log (const wxString& strLogmessage, bool bShowLogMessage /*= false*/)
 {
-    log_.Write(strLogmessage + '\n');
+    pInstance_->log_.Write(strLogmessage + '\n');
 
     if (bShowLogMessage)
     {
@@ -74,7 +75,7 @@ void PTBApp::Log (const wxString& strLogmessage, bool bShowLogMessage /*= false*
 void PTBApp::CareLogSize ()
 {
     // check log-file size
-    if (log_.Length() > PTB_LOG_MAXSIZE)
+    if (log_.Length() > (config_.GetMaxLogFileSizeInKB() * 1024))
     {
         // close the file
         log_.Close();
@@ -125,7 +126,7 @@ void PTBApp::Usage ()
 
     out->Printf("");
     out->Printf("=== %s === (GPLv3 licencesed)", GetFullApplicationName());
-    out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help]", PTB_APP_NAME);
+    out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help] [-i|--info]", PTB_APP_NAME);
     out->Printf("");
     out->Printf("  [hashname]     Specify the hash-name to store as a signature file.");
     out->Printf("                 If there is no hash specified a randome one is used.");
@@ -134,8 +135,38 @@ void PTBApp::Usage ()
     out->Printf("");
     out->Printf("  -o|--output    Use to specify a outputfilename. By default it is %s.", PTB_OUT_DEFAULT);
     out->Printf("");
-    out->Printf("  -h             Display this text.");
+    out->Printf("  -h|--help      Display this text.");
     out->Printf("");
+    out->Printf("  -i|--info      Display infos about the application.");
+}
+
+void PTBApp::About ()
+{
+    wxMessageOutput* out = wxMessageOutput::Get();
+
+    out->Printf("%s Copyright (C) 2008 Christian Buhtz <blackfisk@web.de>", GetFullApplicationName());
+    out->Printf("  Website: <wxptb.berlios.de>");
+    out->Printf("  This program comes with ABSOLUTELY NO WARRANTY;");
+    out->Printf("  This is free software, and you are welcome to redistribute it");
+    out->Printf("  under certain conditions;");
+    out->Printf("  for details see the file LICENSE;");
+    out->Printf("");
+    out->Printf("Developers:");
+    out->Printf("  Christian Buhtz");
+    out->Printf("");
+    out->Printf("3rd-Party-Components:");
+    out->Printf("  wxWidgets (v%d.%d.%d) -> Cross-Platform GUI Library on <www.wxwidgets.org>", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
+    out->Printf("");
+    out->Printf("used Tools:");
+    out->Printf("  Code::Blocks -> open source, cross platform C++ IDE on <www.codeblocks.org>.");
+    out->Printf("  MinGW -> GNU based compiler system for Windows on <www.mingw.org>.");
+    out->Printf("  Inkscape -> open source vector graphics editor on <www.inkscape.org>.");
+    out->Printf("  IcoFX -> icon editor on <icofx.ro>.");
+    out->Printf("");
+    out->Printf("Supporters:");
+    out->Printf("  Jan Kechel -> Maintainer of <www.publictimestamp.org>.");
+    out->Printf("  BerliOS -> free service to Open Source developers on <berlios.de>.");
+    out->Printf("  Gmane -> mail-to-news-Gateway and mailing list archive on <gmane.org>.");
 }
 
 void PTBApp::ParseCmdLine ()
@@ -157,6 +188,12 @@ void PTBApp::ParseCmdLine ()
         {
             Usage();
         }
+        else if ( str.StartsWith("-i")
+          || str.StartsWith("/i")
+          || str.StartsWith("--info") )
+        {
+            About();
+        }
         else if ( str.StartsWith("-o")
                || str.StartsWith("/o")
                || str.StartsWith("--output") )
@@ -166,6 +203,10 @@ void PTBApp::ParseCmdLine ()
                 ++i;
                 strOut_ = argv[i];
             }
+        }
+        else if ( str.StartsWith("-") )
+        {
+            Usage();
         }
         else
         {
@@ -180,6 +221,12 @@ void PTBApp::ParseCmdLine ()
     wxSocketBase::Initialize();
 
     ParseCmdLine();
+
+    // get conf
+    config_.Init();
+
+    // check the log-file size
+    CareLogSize();
 
     // start the thread
     new PTBTaker(this);

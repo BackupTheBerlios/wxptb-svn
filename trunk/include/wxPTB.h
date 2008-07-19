@@ -25,7 +25,7 @@
 
 #define PTB_APP_NAME                "wxPTB"
 #define PTB_VERSION_MAJOR           0
-#define PTB_VERSION_MINOR           1
+#define PTB_VERSION_MINOR           2
 #define PTB_VERSION_RELEASE         0
 #define PTB_VERSION_EXTENSION       ""
 #define PTB_AUTHOR                  "Christian Buhtz"
@@ -36,8 +36,9 @@
 #define PTB_OUT_DEFAULT             "ptb.sig"
 #define PTB_HASH_ALL                "all"
 
-#define PTB_LOG_MAXSIZE             1024*1024
 #define PTB_LOG_FILE                "wxPTB.log"
+
+#define PTB_CONFIG_FILE             "wxPTB.conf"
 
 #define PTB_ERR_URL                 "Can not create the URL!"
 #define PTB_ERR_STREAM              "Can not create the input stream!\nMaybe you are offline?\nPlease check your internet connection!"

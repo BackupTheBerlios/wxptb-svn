@@ -25,6 +25,7 @@
 #define PTBAPP_H
 
 // forward declarations
+#include "PTBConfig.h"
 
 #include <wx/wx.h>
 #include <wx/file.h>
@@ -35,11 +36,16 @@ class PTBApp : public wxApp
 {
     private:
         ///
-        bool        bDoExit_;
+        static PTBApp*      pInstance_;
         ///
-        wxTimer*    pTimer_;
+        bool                bDoExit_;
         ///
-        wxFile      log_;
+        wxTimer*            pTimer_;
+        ///
+        wxFile              log_;
+
+        ///
+        PTBConfig           config_;
 
         /** The hash to store in a signature file.
             If it is not specified or the hash doesn't exists a random hash is used (default).
@@ -55,6 +61,8 @@ class PTBApp : public wxApp
 
         ///
         void Usage ();
+        ///
+        void About ();
         ///
         void ParseCmdLine ();
         ///
@@ -75,12 +83,17 @@ class PTBApp : public wxApp
         static wxString GetVersion ();
 
         ///
-        void Log (const wxString& strLogmessage, bool bShowLogMessage = false);
+        static void Log (const wxString& strLogmessage, bool bShowLogMessage = false);
 
         ///
         wxString GetHash ();
         ///
         wxString GetOut ();
+        ///
+        const PTBConfig& Config ()
+        {
+            return config_;
+        }
 
         /// start point like main()
         virtual bool OnInit();

@@ -2,8 +2,17 @@
                              ==== CHANGELOG ====
 
                                -- wxPTB --
-							   Version 0.1.0
+							   Version 0.2.0
 -------------------------------------------------------------------------------
 
-<<< 0.0.1 >>>
+<<< 0.1.0 >>>
+The first release!
+
+<<< 0.2.0 >>>
++ Retry loading of the wxPTB again if it fails.
++ A config file for
+  - maximum size of log-file
+  - times to retry
+  - waiting delay between retrys
++ info/about available with the option "--info"
 

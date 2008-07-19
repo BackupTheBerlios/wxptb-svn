@@ -2,7 +2,7 @@
                              ==== CREDITS ====
 
                                -- wxPTB --
-                              Version 0.1.0
+                              Version 0.2.0
 -------------------------------------------------------------------------------
 
 Thanks to...
@@ -11,6 +11,8 @@ Thanks to...
 
 - the wxWidget community and the maintainers
   Cross-Platform GUI Library <http://www.wxwidgets.org>
+
+- There is a random number generator of a unknown develeoper.
 
 - the Code::Blocks community and the maintainers
   The open source, cross platform C++ IDE <http://www.codeblocks.org>
@@ -24,6 +26,9 @@ Thanks to...
 - Inkscape
   Open Source vector graphics editor, using the W3C standard Scalable
   Vector Graphics (SVG) file format. <http://www.inkscape.org>
+
+- IcoFX
+  Icon editor. <http://icofx.ro>
 
 - persons created some stuff that is not in the release-version
 

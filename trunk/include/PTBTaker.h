@@ -43,6 +43,9 @@ class PTBTaker : public wxThread
         ///
         PTBApp*         pCaller_;
 
+        ///
+        long            lRetrys_;
+
 
         /** Search for a node named 'strNodeName' and return its content. 'pNodeRoot' is
             used to begin the search. */
@@ -53,6 +56,9 @@ class PTBTaker : public wxThread
         /** Create the signatur for 'strHash' and write it to the file 'strOutputFilename'.
             If there is no filename specified the hash-name is used as filename. */
         void WriteHashSig (const wxString& strHash, const wxString& strOutputFilename = wxEmptyString);
+
+        ///
+        bool Work ();
 
     public:
         /// ctor

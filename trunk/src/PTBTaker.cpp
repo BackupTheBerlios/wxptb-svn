@@ -31,7 +31,8 @@
 
 
 PTBTaker::PTBTaker (PTBApp* pCaller)
-        : pCaller_(pCaller)
+        : pCaller_(pCaller),
+          lRetrys_(0)
 {
     arrHashes_.Add("sha512");
     arrHashes_.Add("whirlpool");
@@ -50,6 +51,8 @@ PTBTaker::PTBTaker (PTBApp* pCaller)
     arrHashes_.Add("whirlpool2");
     arrHashes_.Add("ripemd256");
     arrHashes_.Add("ripemd320");
+
+    lRetrys_ = pCaller_->Config().GetLoadRetry();
 
     Create();
     wxThread::Run();
@@ -121,8 +124,7 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
     pCaller_->Log(wxString::Format("Store hash \"%s\" in \"%s\".\n--\n%s", strHash, strFilename, strOut));
 }
 
-
-/*virtual*/ void* PTBTaker::Entry()
+bool PTBTaker::Work ()
 {
     // the url
     wxURL url(PTB_URL_TIMESTAMP);
@@ -130,12 +132,12 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
     // check url
     if ( !(url.IsOk()) )
     {
-        pCaller_->Log(PTB_ERR_URL, true);
+        if (lRetrys_ < 1)
+            pCaller_->Log(PTB_ERR_URL, true);
+        else
+            pCaller_->Log(PTB_ERR_URL, false);
 
-        // exit the thread and the application
-        pCaller_->SetDoExit();
-        Exit(0);
-        return NULL;
+        return false;
     }
 
     // the input stream
@@ -144,12 +146,12 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
     // check stream
     if ( !pInStream || !(pInStream->IsOk()) )
     {
-        pCaller_->Log(PTB_ERR_STREAM, true);
+        if (lRetrys_ < 1)
+            pCaller_->Log(PTB_ERR_STREAM, true);
+        else
+            pCaller_->Log(PTB_ERR_STREAM, false);
 
-        // exit the thread and the application
-        pCaller_->SetDoExit();
-        Exit(0);
-        return NULL;
+        return false;
     }
 
 
@@ -159,12 +161,12 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
     // check xml document
     if ( !(docXml_.IsOk()) )
     {
-        pCaller_->Log(PTB_ERR_XMLDOC, true);
+        if (lRetrys_ < 1)
+            pCaller_->Log(PTB_ERR_XMLDOC, true);
+        else
+            pCaller_->Log(PTB_ERR_XMLDOC, false);
 
-        // exit the thread and the application
-        pCaller_->SetDoExit();
-        Exit(0);
-        return NULL;
+        return false;
     }
 
     // select the hash
@@ -197,6 +199,30 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
 
             // use the specifiied
             WriteHashSig(strHash, PTB_OUT_DEFAULT);
+        }
+    }
+
+    return true;
+}
+
+/*virtual*/ void* PTBTaker::Entry()
+{
+    if ( Work() == false )
+    {
+        while ( lRetrys_ > 0 )
+        {
+            // decrement the retrys
+            --lRetrys_;
+
+            // delay
+            wxSleep(pCaller_->Config().GetLoadDelayInSeconds());
+
+            //
+            PTBApp::Log("Retry...");
+
+            // try again
+            if (Work())
+                break;
         }
     }
 
