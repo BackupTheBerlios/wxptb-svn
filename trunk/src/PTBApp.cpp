@@ -29,8 +29,6 @@
 #include <wx/msgout.h>
 
 
-#include "randomc/randomc.h"
-
 #include "wxPTB.h"
 #include "PTBTaker.h"
 
@@ -218,6 +216,9 @@ void PTBApp::ParseCmdLine ()
 
 /*virtual*/ bool PTBApp::OnInit()
 {
+    // init random numbers
+    srand((int)(time(NULL))*(int)(this));
+
     wxSocketBase::Initialize();
 
     ParseCmdLine();
@@ -284,8 +285,7 @@ void PTBApp::OnTimer_CheckForExit (wxTimerEvent& rEvent)
 
 int PTBApp::GetRandomNumber (int iFrom, int iTo)
 {
-    TRandomMersenne     rg(time(0));        // random number generator
-    return rg.IRandom(iFrom, iTo);
+    return rand() % (iTo - iFrom + 1) + iFrom;
 }
 
 wxString PTBApp::GetHash ()

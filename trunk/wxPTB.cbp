@@ -72,11 +72,6 @@
 		<Unit filename="src\PTBApp.cpp" />
 		<Unit filename="src\PTBConfig.cpp" />
 		<Unit filename="src\PTBTaker.cpp" />
-		<Unit filename="third-party\randomc\MERSENNE.CPP" />
-		<Unit filename="third-party\randomc\RANCOMBI.CPP" />
-		<Unit filename="third-party\randomc\RANROTB.CPP" />
-		<Unit filename="third-party\randomc\RANROTW.CPP" />
-		<Unit filename="third-party\randomc\Randomc.h" />
 		<Unit filename="wxPTB.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

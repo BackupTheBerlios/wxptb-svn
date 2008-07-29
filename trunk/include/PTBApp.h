@@ -107,7 +107,6 @@ class PTBApp : public wxApp
 
         ///
         int GetRandomNumber (int iFrom, int iTo);
-
 };
 
 DECLARE_APP(PTBApp)
