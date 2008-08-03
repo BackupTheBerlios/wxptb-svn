@@ -20,6 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
+#include <wx/wx.h>
+#include <wx/file.h>
 
 #include "PTBApp.h"
 
@@ -29,6 +31,11 @@
 #include <wx/msgout.h>
 
 
+<<<<<<< .mine
+#include "randomc/Randomc.h"
+
+=======
+>>>>>>> .r12
 #include "wxPTB.h"
 #include "PTBTaker.h"
 
