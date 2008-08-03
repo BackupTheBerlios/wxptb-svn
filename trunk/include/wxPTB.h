@@ -33,12 +33,7 @@
 #define PTB_URL_TIMESTAMP           "http://publictimestamp.org/rest/v1.0/publictimestamp-rest-v1.0.pl?pt=getlatestptb"
 
 #define PTB_OUT_SUFFIX              ".sig"
-#define PTB_OUT_DEFAULT             "ptb.sig"
 #define PTB_HASH_ALL                "all"
-
-#define PTB_LOG_FILE                "wxPTB.log"
-
-#define PTB_CONFIG_FILE             "wxPTB.conf"
 
 #define PTB_ERR_URL                 "Can not create the URL!"
 #define PTB_ERR_STREAM              "Can not create the input stream!\nMaybe you are offline?\nPlease check your internet connection!"

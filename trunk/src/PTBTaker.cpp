@@ -176,7 +176,7 @@ bool PTBTaker::Work ()
     wxString strOuputFilename = pCaller_->GetOut();
 
     if ( strOuputFilename.IsEmpty() )
-        strOuputFilename = PTB_OUT_DEFAULT;
+        strOuputFilename = PTBApp::GetDefaultPTBFileName();
 
 
     if (strHash.IsEmpty())
@@ -197,8 +197,8 @@ bool PTBTaker::Work ()
             if (arrHashes_.Index(strHash) == wxNOT_FOUND)
                 strHash = arrHashes_[pCaller_->GetRandomNumber(0, arrHashes_.GetCount()-1)];
 
-            // use the specifiied
-            WriteHashSig(strHash, PTB_OUT_DEFAULT);
+            // use the specified
+            WriteHashSig(strHash, PTBApp::GetDefaultPTBFileName());
         }
     }
 

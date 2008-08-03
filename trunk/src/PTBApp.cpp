@@ -20,9 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***/
 
-#include <wx/wx.h>
-#include <wx/file.h>
-
 #include "PTBApp.h"
 
 #include <wx/timer.h>
@@ -30,12 +27,6 @@
 #include <wx/file.h>
 #include <wx/msgout.h>
 
-
-<<<<<<< .mine
-#include "randomc/Randomc.h"
-
-=======
->>>>>>> .r12
 #include "wxPTB.h"
 #include "PTBTaker.h"
 
@@ -43,20 +34,62 @@
 
 IMPLEMENT_APP(PTBApp);
 
-/*static*/ PTBApp* PTBApp::pInstance_ = NULL;
+/*static*/ PTBApp*      PTBApp::pInstance_          = NULL;
+/*static*/ wxString     PTBApp::strApplicationDir_  = ".";
 
 PTBApp::PTBApp ()
-      : bDoExit_(false),
-        log_(PTB_LOG_FILE, wxFile::write_append)
+      : bDoExit_(false)
 {
     pInstance_ = this;
-
-    Log(wxString::Format("\n%s started...", GetFullApplicationName()));
 }
 
 
 /*virtual*/ PTBApp::~PTBApp ()
 {
+}
+
+void PTBApp::InitLog ()
+{
+    log_.Open(GetLogFileName(), wxFile::write_append);
+}
+
+/*static*/ const wxString PTBApp::GetLogFileName ()
+{
+    #if defined(__WXMSW__)
+        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.log";
+    #elif defined(__UNIX__)
+        #error "No Log-File specified for UNIX-builds!"
+    #else
+        #error "Unsupported plattform! Please contact the project maintainer for support!"
+    #endif
+
+    return str;
+}
+
+/*static*/ const wxString PTBApp::GetConfigFileName ()
+{
+    #if defined(__WXMSW__)
+        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.conf";
+    #elif defined(__UNIX__)
+        #error "No Config-File specified for UNIX-builds!"
+    #else
+        #error "Unsupported plattform! Please contact the project maintainer for support!"
+    #endif
+
+    return str;
+}
+
+/*static*/ const wxString PTBApp::GetDefaultPTBFileName ()
+{
+    #if defined(__WXMSW__)
+        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.sig";
+    #elif defined(__UNIX__)
+        #error "No wxPTB.sig-File specified for UNIX-builds!"
+    #else
+        #error "Unsupported plattform! Please contact the project maintainer for support!"
+    #endif
+
+    return str;
 }
 
 void PTBApp::SetDoExit (bool bDoExit /*= true*/)
@@ -85,9 +118,9 @@ void PTBApp::CareLogSize ()
         // close the file
         log_.Close();
         // backup the file
-        wxRenameFile(PTB_LOG_FILE, wxString(PTB_LOG_FILE) + ".old", true);
+        wxRenameFile(GetLogFileName(), wxString(GetLogFileName()) + ".old", true);
         // create a new empty file
-        log_.Open(PTB_LOG_FILE, wxFile::write_append);
+        log_.Open(GetLogFileName(), wxFile::write_append);
     }
 }
 
@@ -138,11 +171,13 @@ void PTBApp::Usage ()
     out->Printf("                 Use \"all\" to store all hashes in signature files.");
     out->Printf("                 The option \"-o\" is ignored in that case!");
     out->Printf("");
-    out->Printf("  -o|--output    Use to specify a outputfilename. By default it is %s.", PTB_OUT_DEFAULT);
+    out->Printf("  -o|--output    Use to specify a outputfilename. By default it is %s.", PTBApp::GetDefaultPTBFileName().AfterLast(wxFILE_SEP_PATH));
     out->Printf("");
     out->Printf("  -h|--help      Display this text.");
     out->Printf("");
     out->Printf("  -i|--info      Display infos about the application.");
+    out->Printf("");
+    AboutApplicationFiles();
 }
 
 void PTBApp::About ()
@@ -172,6 +207,19 @@ void PTBApp::About ()
     out->Printf("  Jan Kechel -> Maintainer of <www.publictimestamp.org>.");
     out->Printf("  BerliOS -> free service to Open Source developers on <berlios.de>.");
     out->Printf("  Gmane -> mail-to-news-Gateway and mailing list archive on <gmane.org>.");
+    out->Printf("");
+    AboutApplicationFiles();
+}
+
+void PTBApp::AboutApplicationFiles ()
+{
+    wxMessageOutput* out = wxMessageOutput::Get();
+
+    out->Printf("Files and directories used by %s :", GetFullApplicationName());
+    out->Printf("  %s\n\t-> Configuration file.", GetConfigFileName());
+    out->Printf("  %s\n\t-> Log file.", GetLogFileName());
+    out->Printf("  %s\n\t-> Default ptb-signature file.", GetDefaultPTBFileName());
+    out->Printf("  %s\n\t-> Application directory.", GetApplicationDirectory());
 }
 
 void PTBApp::ParseCmdLine ()
@@ -220,9 +268,42 @@ void PTBApp::ParseCmdLine ()
     }
 }
 
+void PTBApp::RememberApplicationDirectory ()
+{
+    strApplicationDir_ = /*wxGetCwd() + wxFILE_SEP_PATH + */argv[0].BeforeLast(wxFILE_SEP_PATH);
+
+    if (strApplicationDir_.IsEmpty())
+        strApplicationDir_ = wxGetCwd();
+}
+
+/*static*/ const wxString& PTBApp::GetApplicationDirectory ()
+{
+    return strApplicationDir_;
+}
 
 /*virtual*/ bool PTBApp::OnInit()
 {
+    /*SetApplicationDirectory ();
+
+    wxMessageOutput* pOut = wxMessageOutput::Get();
+
+    pOut->Printf("wrkdir: %s\narg: %s\napp dir: %s", wxGetCwd(), argv[0], GetApplicationDirectory());
+
+    wxSetWorkingDirectory(GetApplicationDirectory());
+
+    pOut->Printf("\nwrkdir: %s", wxGetCwd());
+
+    return false;*/
+
+    // remember the application/binary directory
+    RememberApplicationDirectory ();
+
+    //
+    InitLog ();
+
+    //
+    Log(wxString::Format("\n%s started...", GetFullApplicationName()));
+
     // init random numbers
     srand((int)(time(NULL))*(int)(this));
 

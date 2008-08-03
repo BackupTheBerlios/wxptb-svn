@@ -39,11 +39,15 @@ class PTBApp : public wxApp
         static PTBApp*      pInstance_;
         ///
         bool                bDoExit_;
+
         ///
         wxTimer*            pTimer_;
+
+        ///
+        static wxString     strApplicationDir_;
+
         ///
         wxFile              log_;
-
         ///
         PTBConfig           config_;
 
@@ -64,7 +68,16 @@ class PTBApp : public wxApp
         ///
         void About ();
         ///
+        void AboutApplicationFiles ();
+        ///
         void ParseCmdLine ();
+
+        ///
+        void RememberApplicationDirectory ();
+
+
+        ///
+        void InitLog ();
         ///
         void CareLogSize ();
 
@@ -81,6 +94,15 @@ class PTBApp : public wxApp
         static wxString GetFullApplicationName ();
         /// return major, minor, release number and extensions as string
         static wxString GetVersion ();
+
+        ///
+        static const wxString& GetApplicationDirectory ();
+        ///
+        static const wxString GetLogFileName ();
+        ///
+        static const wxString GetConfigFileName ();
+        ///
+        static const wxString GetDefaultPTBFileName ();
 
         ///
         static void Log (const wxString& strLogmessage, bool bShowLogMessage = false);

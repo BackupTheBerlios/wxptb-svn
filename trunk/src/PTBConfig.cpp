@@ -39,16 +39,21 @@ PTBConfig::PTBConfig ()
 void PTBConfig::Init ()
 {
     // check if config file exists
-    if ( !(wxFile::Exists(PTB_CONFIG_FILE)) )
+    if ( !(wxFile::Exists(PTBApp::GetConfigFileName())) )
     {
-        PTBApp::Log(wxString::Format("Log-file %s doesn't exists! Create a default one...", PTB_CONFIG_FILE));
+        PTBApp::Log
+        (
+            wxString::Format("Log-file %s doesn't exists! Create a default one...",
+                             PTBApp::GetConfigFileName())
+        );
 
-        wxFile file(PTB_CONFIG_FILE, wxFile::write);
+        wxFile file(PTBApp::GetConfigFileName(), wxFile::write);
 
         file.Write(wxString::Format
         (
             "# Configuration file for %s\n\n" \
-            "# Maximum size in kilobytes of the log-file \"%s\".\n" \
+            "# Maximum size in kilobytes of the log-file \"%s\"\n" \
+            "# stored in \"%s\".\n" \
             "# If the size is reached the log-file is renamed with \".old\"\n" \
             "# as suffix and a new and empty one is created.\n" \
             "log-size=%d\n\n" \
@@ -58,7 +63,8 @@ void PTBConfig::Init ()
             "# if it was failed.\n" \
             "load-retry-delay=%d\n",
             PTBApp::GetFullApplicationName(),
-            PTB_LOG_FILE,
+            PTBApp::GetLogFileName().AfterLast(wxFILE_SEP_PATH),
+            PTBApp::GetLogFileName().BeforeLast(wxFILE_SEP_PATH),
             GetMaxLogFileSizeInKB(),
             GetLoadRetry(),
             GetLoadDelayInSeconds()
@@ -76,7 +82,7 @@ void PTBConfig::Init ()
 
 void PTBConfig::ReadConfig ()
 {
-    wxFileInputStream   is(PTB_CONFIG_FILE);
+    wxFileInputStream   is(PTBApp::GetConfigFileName());
     wxFileConfig        fileConfig(is);
     long                lVal;
 
@@ -95,7 +101,7 @@ void PTBConfig::ReadConfig ()
 
 bool PTBConfig::SaveConfig ()
 {
-    wxFileInputStream   is(PTB_CONFIG_FILE);
+    wxFileInputStream   is(PTBApp::GetConfigFileName());
     wxFileConfig        fileConfig(is);
 
     // maximum log-file size
@@ -108,11 +114,17 @@ bool PTBConfig::SaveConfig ()
     fileConfig.Write("load-retry-delay", lLoadDelay_);
 
     // save
-    wxFileOutputStream os(PTB_CONFIG_FILE);
+    wxFileOutputStream os(PTBApp::GetConfigFileName());
 
     if ( !(fileConfig.Save(os)) )
     {
-        PTBApp::Log(wxString::Format("Error while saving the config file %s.", PTB_CONFIG_FILE), true);
+        PTBApp::Log
+        (
+            wxString::Format("Error while saving the config file %s.",
+                             PTBApp::GetConfigFileName()),
+            true
+        );
+
         return false;
     }
 
