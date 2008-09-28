@@ -163,7 +163,7 @@ void PTBApp::Usage ()
     wxMessageOutput* out = wxMessageOutput::Get();
 
     out->Printf("");
-    out->Printf("=== %s === (GPLv3 licencesed)", GetFullApplicationName());
+    out->Printf("=== %s === (GPLv3 licensed)", GetFullApplicationName());
     out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help] [-i|--info]", PTB_APP_NAME);
     out->Printf("");
     out->Printf("  [hashname]     Specify the hash-name to store as a signature file.");
