@@ -24,7 +24,9 @@
 
 #include <wx/timer.h>
 #include <wx/url.h>
-#include <wx/file.h>
+//#include <wx/file.h>
+//#include <wx/filefn.h>
+#include <wx/filename.h>
 #include <wx/msgout.h>
 
 #include "wxPTB.h"
@@ -58,7 +60,7 @@ void PTBApp::InitLog ()
     #if defined(__WXMSW__)
         wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.log";
     #elif defined(__UNIX__)
-        #error "No Log-File specified for UNIX-builds!"
+        wxString str = wxFileName::GetHomeDir() + wxFILE_SEP_PATH + PTB_CONFIG_DIR + wxFILE_SEP_PATH + "wxptb.log";
     #else
         #error "Unsupported plattform! Please contact the project maintainer for support!"
     #endif
@@ -71,7 +73,7 @@ void PTBApp::InitLog ()
     #if defined(__WXMSW__)
         wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.conf";
     #elif defined(__UNIX__)
-        #error "No Config-File specified for UNIX-builds!"
+        wxString str = wxFileName::GetHomeDir() + wxFILE_SEP_PATH + PTB_CONFIG_DIR + wxFILE_SEP_PATH + "wxptb.conf";
     #else
         #error "Unsupported plattform! Please contact the project maintainer for support!"
     #endif
@@ -81,10 +83,8 @@ void PTBApp::InitLog ()
 
 /*static*/ const wxString PTBApp::GetDefaultPTBFileName ()
 {
-    #if defined(__WXMSW__)
+    #if defined(__WXMSW__) || defined(__UNIX__)
         wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.sig";
-    #elif defined(__UNIX__)
-        #error "No wxPTB.sig-File specified for UNIX-builds!"
     #else
         #error "Unsupported plattform! Please contact the project maintainer for support!"
     #endif
@@ -167,7 +167,7 @@ void PTBApp::Usage ()
     out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help] [-i|--info]", PTB_APP_NAME);
     out->Printf("");
     out->Printf("  [hashname]     Specify the hash-name to store as a signature file.");
-    out->Printf("                 If there is no hash specified a randome one is used.");
+    out->Printf("                 If there is no hash specified a random one is used.");
     out->Printf("                 Use \"all\" to store all hashes in signature files.");
     out->Printf("                 The option \"-o\" is ignored in that case!");
     out->Printf("");
@@ -283,20 +283,17 @@ void PTBApp::RememberApplicationDirectory ()
 
 /*virtual*/ bool PTBApp::OnInit()
 {
-    /*SetApplicationDirectory ();
-
-    wxMessageOutput* pOut = wxMessageOutput::Get();
-
-    pOut->Printf("wrkdir: %s\narg: %s\napp dir: %s", wxGetCwd(), argv[0], GetApplicationDirectory());
-
-    wxSetWorkingDirectory(GetApplicationDirectory());
-
-    pOut->Printf("\nwrkdir: %s", wxGetCwd());
-
-    return false;*/
-
     // remember the application/binary directory
     RememberApplicationDirectory ();
+
+    // check for the "$HOME/.wxPTB"
+    wxString strHome = wxFileName::GetHomeDir();
+    if ( !(wxDirExists(strHome + wxFILE_SEP_PATH + PTB_CONFIG_DIR)) )
+    {
+        wxSetWorkingDirectory(strHome);
+        wxFileName::Mkdir(PTB_CONFIG_DIR, 0700);
+        wxSetWorkingDirectory(GetApplicationDirectory());
+    }
 
     //
     InitLog ();
@@ -318,9 +315,15 @@ void PTBApp::RememberApplicationDirectory ()
     CareLogSize();
 
     // start the thread
-    new PTBTaker(this);
+    PTBTaker* pTaker = new PTBTaker(this);
 
-    // create timer
+    // wait
+    pTaker->Wait();
+
+    // delete thread
+    delete pTaker;
+
+    /* create timer
     pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
 
     // connect timer
@@ -334,9 +337,9 @@ void PTBApp::RememberApplicationDirectory ()
     );
 
     // start timer
-    pTimer_->Start(1000, wxTIMER_CONTINUOUS);
+    pTimer_->Start(1000, wxTIMER_CONTINUOUS);*/
 
-    return true;
+    return false;
 }
 
 

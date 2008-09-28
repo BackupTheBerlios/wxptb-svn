@@ -31,7 +31,8 @@
 
 
 PTBTaker::PTBTaker (PTBApp* pCaller)
-        : pCaller_(pCaller),
+        : wxThread(wxTHREAD_JOINABLE),
+          pCaller_(pCaller),
           lRetrys_(0)
 {
     arrHashes_.Add("sha512");
@@ -227,8 +228,8 @@ bool PTBTaker::Work ()
     }
 
     // exit the thread and the application
-    pCaller_->SetDoExit();
-    Exit(0);
+    //pCaller_->SetDoExit();
+    //Exit(0);
     return NULL;
 }
 

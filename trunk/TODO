@@ -1,3 +1,6 @@
+symblinks wxptb -> wxPTB
+wxPTB.sig to HOME
+/usr/share/man (644)
 /opt/wxPTB/wxptb (binary)
 ~/.wxPTB/wxPTB.conf
 ~/.wxPTB/wxPTB.log

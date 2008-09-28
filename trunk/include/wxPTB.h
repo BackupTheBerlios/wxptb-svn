@@ -32,6 +32,8 @@
 
 #define PTB_URL_TIMESTAMP           "http://publictimestamp.org/rest/v1.0/publictimestamp-rest-v1.0.pl?pt=getlatestptb"
 
+#define PTB_CONFIG_DIR              ".wxptb"
+
 #define PTB_OUT_SUFFIX              ".sig"
 #define PTB_HASH_ALL                "all"
 
