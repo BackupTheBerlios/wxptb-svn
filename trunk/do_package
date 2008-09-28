@@ -1,0 +1,5 @@
+rm linux-2.6-intel/wxPTB-0.3.0-linux-2.6-intel.deb
+rm linux-2.6-intel/wxPTB-0.3.0-linux-2.6-intel.rpm
+epm -v -f deb wxPTB
+epm -v -f rpm wxPTB
+ls -l linux-2.6-intel
