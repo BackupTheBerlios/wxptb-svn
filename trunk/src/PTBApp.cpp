@@ -24,8 +24,6 @@
 
 #include <wx/timer.h>
 #include <wx/url.h>
-//#include <wx/file.h>
-//#include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/msgout.h>
 

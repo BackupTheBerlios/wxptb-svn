@@ -32,7 +32,7 @@
 
 
 ///
-class PTBApp : public wxApp
+class PTBApp : public wxAppConsole
 {
     private:
         ///

@@ -1,5 +1,9 @@
-rm linux-2.6-intel/wxPTB-0.3.0-linux-2.6-intel.deb
-rm linux-2.6-intel/wxPTB-0.3.0-linux-2.6-intel.rpm
-epm -v -f deb wxPTB
-epm -v -f rpm wxPTB
-ls -l linux-2.6-intel
+rm linux-2.6-i386/wxPTB-0.3.0-linux-2.6-i386.deb
+rm linux-2.6-i386/wxPTB-0.3.0-linux-2.6-i386.rpm
+epm -v -a i386 -f deb wxPTB
+epm -v -a i386 -f rpm wxPTB
+rm /vbox_share/wxPTB-0.3.0-linux-2.6-i386.deb
+rm /vbox_share/wxPTB-0.3.0-linux-2.6-i386.rpm
+cp linux-2.6-i386/wxPTB-0.3.0-linux-2.6-i386.deb /vbox_share
+cp linux-2.6-i386/wxPTB-0.3.0-linux-2.6-i386.rpm /vbox_share
+ls -l linux-2.6-i386
