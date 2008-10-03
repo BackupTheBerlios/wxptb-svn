@@ -32,7 +32,7 @@
 
 #define PTB_ID_TIMER_CHECKFOR_EXIT          1 + wxID_HIGHEST
 
-IMPLEMENT_APP(PTBApp);
+IMPLEMENT_APP_CONSOLE(PTBApp);
 
 /*static*/ PTBApp*      PTBApp::pInstance_          = NULL;
 /*static*/ wxString     PTBApp::strApplicationDir_  = ".";
@@ -320,22 +320,6 @@ void PTBApp::RememberApplicationDirectory ()
 
     // delete thread
     delete pTaker;
-
-    /* create timer
-    pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
-
-    // connect timer
-    Connect
-    (
-        PTB_ID_TIMER_CHECKFOR_EXIT,
-        wxEVT_TIMER,
-        wxTimerEventHandler(PTBApp::OnTimer_CheckForExit),
-        NULL,
-        this
-    );
-
-    // start timer
-    pTimer_->Start(1000, wxTIMER_CONTINUOUS);*/
 
     return false;
 }

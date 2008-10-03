@@ -2,7 +2,7 @@
                              ==== CHANGELOG ====
 
                                -- wxPTB --
-							   Version 0.2.0
+							   Version 0.3.0
 -------------------------------------------------------------------------------
 
 <<< 0.1.0 >>>
@@ -16,3 +16,7 @@ The first release!
   - waiting delay between retrys
 + info/about available with the option "--info"
 
+<<< 0.3.0 >>>
++ unix/linux support
++ it is a real console application now
++ some micro modifications

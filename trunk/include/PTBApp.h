@@ -41,9 +41,6 @@ class PTBApp : public wxAppConsole
         bool                bDoExit_;
 
         ///
-        wxTimer*            pTimer_;
-
-        ///
         static wxString     strApplicationDir_;
 
         ///
