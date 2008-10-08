@@ -229,7 +229,7 @@ bool PTBTaker::Work ()
 
     // exit the thread and the application
     pCaller_->SetDoExit();
-    Exit(0);
+    //pCaller_->Exit();
     return NULL;
 }
 

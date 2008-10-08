@@ -281,6 +281,8 @@ void PTBApp::RememberApplicationDirectory ()
     // start the thread
     PTBTaker* pTaker = new PTBTaker(this);
 
+    //wxSleep(10);
+
     // create timer
     pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
 
