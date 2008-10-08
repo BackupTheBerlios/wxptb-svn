@@ -2,7 +2,7 @@
                              ==== HELP ====
 
                                -- wxPTB --
-                              Version 0.3.0
+                              Version 0.3.1
 -------------------------------------------------------------------------------
 
 USAGE: wxPTB [hashname] [-o|--output filename] [-h|--help] [-i|--info]

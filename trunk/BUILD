@@ -2,7 +2,7 @@
                               ==== BUILD ====
 
                                -- wxPTB --
-                              Version 0.3.0
+                              Version 0.3.1
 -------------------------------------------------------------------------------
 
 wxPTB want to support all plattforms, architectures and build environments!

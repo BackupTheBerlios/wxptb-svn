@@ -4,7 +4,7 @@
 %license LICENSE
 %readme README
 %description This program load the current public-timestamp-block from publictimestamp.org and store it in a file to use it e.g. as a signature in an e-mail software.
-%version 0.3.0
+%version 0.3.1
 f 755 user user /usr/bin/wxptb wxPTB_unix_rs
 f 644 user user /usr/share/doc/wxptb/README README
 f 644 user user /usr/share/doc/wxptb/HELP HELP
