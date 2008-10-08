@@ -29,6 +29,7 @@
 
 #include <wx/wx.h>
 #include <wx/file.h>
+#include <wx/timer.h>
 
 
 ///
@@ -39,6 +40,8 @@ class PTBApp : public wxAppConsole
         static PTBApp*      pInstance_;
         ///
         bool                bDoExit_;
+        ///
+        wxTimer*            pTimer_;
 
         ///
         static wxString     strApplicationDir_;
@@ -121,8 +124,6 @@ class PTBApp : public wxAppConsole
 
         ///
         void OnTimer_CheckForExit (wxTimerEvent& rEvent);
-
-        int DownloadFile(const wxString& strSource, const wxString& strTarget);
 
         ///
         int GetRandomNumber (int iFrom, int iTo);

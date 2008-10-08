@@ -122,40 +122,6 @@ void PTBApp::CareLogSize ()
     }
 }
 
-int PTBApp::DownloadFile(const wxString& strSource, const wxString& strTarget)
-{
-    #define DLBUFSIZE 4096
-
-    wxURL url(strSource);
-
-    if(url.GetError() == wxURL_NOERR)
-    {
-        wxInputStream *in = url.GetInputStream();
-        wxFile fileOut(strTarget, wxFile::write);
-
-        if(!in)
-            return -1;
-
-        unsigned char   buffer[DLBUFSIZE];
-        size_t          tRead;
-
-        do
-        {
-            in->Read(buffer, DLBUFSIZE);
-            tRead = in->LastRead();
-
-            if ( tRead > 0 )
-                fileOut.Write(buffer, tRead);
-
-        } while( !in->Eof() );
-
-        delete in;
-        fileOut.Close();
-    }
-
-    return url.GetError();
-}
-
 void PTBApp::Usage ()
 {
     wxMessageOutput* out = wxMessageOutput::Get();
@@ -315,13 +281,31 @@ void PTBApp::RememberApplicationDirectory ()
     // start the thread
     PTBTaker* pTaker = new PTBTaker(this);
 
+    // create timer
+    pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
+
+    // connect timer
+    Connect
+    (
+        PTB_ID_TIMER_CHECKFOR_EXIT,
+        wxEVT_TIMER,
+        wxTimerEventHandler(PTBApp::OnTimer_CheckForExit),
+        NULL,
+        this
+    );
+
+    // start timer
+    pTimer_->Start(1000, wxTIMER_CONTINUOUS);
+
+    return true;
+/*
     // wait
     pTaker->Wait();
 
     // delete thread
     delete pTaker;
 
-    return false;
+    return false;*/
 }
 
 

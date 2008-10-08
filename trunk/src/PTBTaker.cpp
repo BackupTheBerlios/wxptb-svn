@@ -31,7 +31,7 @@
 
 
 PTBTaker::PTBTaker (PTBApp* pCaller)
-        : wxThread(wxTHREAD_JOINABLE),
+        : //wxThread(wxTHREAD_JOINABLE),
           pCaller_(pCaller),
           lRetrys_(0)
 {
@@ -228,8 +228,8 @@ bool PTBTaker::Work ()
     }
 
     // exit the thread and the application
-    //pCaller_->SetDoExit();
-    //Exit(0);
+    pCaller_->SetDoExit();
+    Exit(0);
     return NULL;
 }
 
