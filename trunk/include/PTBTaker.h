@@ -36,6 +36,9 @@ class PTBTaker : public wxThread
 {
     private:
         ///
+        static PTBTaker*    spInstance_;
+
+        ///
         wxXmlDocument   docXml_;
         ///
         wxArrayString   arrHashes_;
@@ -61,6 +64,12 @@ class PTBTaker : public wxThread
         bool Work ();
 
     public:
+        ///
+        static const PTBTaker* Instance()
+        {
+            return spInstance_;
+        }
+
         /// ctor
         PTBTaker (PTBApp* pCaller);
 
@@ -69,6 +78,7 @@ class PTBTaker : public wxThread
 
         /// thread execution starts here
         virtual void *Entry();
+
 };
 
 #endif

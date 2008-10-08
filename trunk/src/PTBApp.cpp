@@ -38,7 +38,6 @@ IMPLEMENT_APP_CONSOLE(PTBApp);
 /*static*/ wxString     PTBApp::strApplicationDir_  = ".";
 
 PTBApp::PTBApp ()
-      : bDoExit_(false)
 {
     pInstance_ = this;
 }
@@ -46,6 +45,76 @@ PTBApp::PTBApp ()
 
 /*virtual*/ PTBApp::~PTBApp ()
 {
+}
+
+/*virtual*/ bool PTBApp::OnInit()
+{
+    // remember the application/binary directory
+    RememberApplicationDirectory ();
+
+#if defined(__UNIX__)
+    // check for the "$HOME/.wxPTB"
+    wxString strHome = wxFileName::GetHomeDir();
+    if ( !(wxDirExists(strHome + wxFILE_SEP_PATH + PTB_CONFIG_DIR)) )
+    {
+        wxSetWorkingDirectory(strHome);
+        wxFileName::Mkdir(PTB_CONFIG_DIR, 0700);
+        wxSetWorkingDirectory(GetApplicationDirectory());
+    }
+#endif
+
+    //
+    InitLog ();
+
+    //
+    Log(wxString::Format("\n%s started...", GetFullApplicationName()));
+
+    // init random numbers
+    srand((int)(time(NULL))*(int)(this));
+
+    wxSocketBase::Initialize();
+
+    ParseCmdLine();
+
+    // get conf
+    config_.Init();
+
+    // check the log-file size
+    CareLogSize();
+
+    // start the detached thread
+    new PTBTaker(this);
+
+    // create timer
+    pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
+
+    // connect timer
+    Connect
+    (
+        PTB_ID_TIMER_CHECKFOR_EXIT,
+        wxEVT_TIMER,
+        wxTimerEventHandler(PTBApp::OnTimer_CheckForExit),
+        NULL,
+        this
+    );
+
+    // start timer that check if the thread is alive
+    pTimer_->Start(1000, wxTIMER_CONTINUOUS);
+
+    return true;
+}
+
+
+/*virtual*/ int PTBApp::OnExit()
+{
+    return 0;
+}
+
+
+void PTBApp::OnTimer_CheckForExit (wxTimerEvent& rEvent)
+{
+    if ( PTBTaker::Instance() == NULL )
+        Exit();
 }
 
 void PTBApp::InitLog ()
@@ -90,9 +159,40 @@ void PTBApp::InitLog ()
     return str;
 }
 
-void PTBApp::SetDoExit (bool bDoExit /*= true*/)
+
+/*static*/ wxString PTBApp::GetFullApplicationName ()
 {
-    bDoExit_ = bDoExit;
+    return wxString::Format(_T("%s %d.%d.%d %s"),
+                               PTB_APP_NAME,
+                               PTB_VERSION_MAJOR,
+                               PTB_VERSION_MINOR,
+                               PTB_VERSION_RELEASE,
+                               PTB_VERSION_EXTENSION);
+}
+
+/*static*/ wxString PTBApp::GetVersion ()
+{
+    return wxString::Format("%d.%d.%d %s",
+                            PTB_VERSION_MAJOR,
+                            PTB_VERSION_MINOR,
+                            PTB_VERSION_RELEASE,
+                            PTB_VERSION_EXTENSION);
+}
+
+int PTBApp::GetRandomNumber (int iFrom, int iTo)
+{
+    return rand() % (iTo - iFrom + 1) + iFrom;
+}
+
+wxString PTBApp::GetHash ()
+{
+    return strHash_;
+}
+
+
+wxString PTBApp::GetOut ()
+{
+    return strOut_;
 }
 
 /*static*/ void PTBApp::Log (const wxString& strLogmessage, bool bShowLogMessage /*= false*/)
@@ -120,6 +220,65 @@ void PTBApp::CareLogSize ()
         // create a new empty file
         log_.Open(GetLogFileName(), wxFile::write_append);
     }
+}
+
+void PTBApp::ParseCmdLine ()
+{
+    //wxApp::argc;
+    //wxApp::argv;
+
+    wxString str;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        str = argv[i];
+
+        if ( str.StartsWith("-h")
+          || str.StartsWith("/h")
+          || str.StartsWith("--help")
+          || str.StartsWith("-?")
+          || str.StartsWith("/?") )
+        {
+            Usage();
+        }
+        else if ( str.StartsWith("-i")
+          || str.StartsWith("/i")
+          || str.StartsWith("--info") )
+        {
+            About();
+        }
+        else if ( str.StartsWith("-o")
+               || str.StartsWith("/o")
+               || str.StartsWith("--output") )
+        {
+            if (argc > i)
+            {
+                ++i;
+                strOut_ = argv[i];
+            }
+        }
+        else if ( str.StartsWith("-") )
+        {
+            Usage();
+        }
+        else
+        {
+            strHash_ = argv[i];
+        }
+    }
+}
+
+void PTBApp::RememberApplicationDirectory ()
+{
+    strApplicationDir_ = argv[0].BeforeLast(wxFILE_SEP_PATH);
+
+    if (strApplicationDir_.IsEmpty())
+        strApplicationDir_ = wxGetCwd();
+}
+
+/*static*/ const wxString& PTBApp::GetApplicationDirectory ()
+{
+    return strApplicationDir_;
 }
 
 void PTBApp::Usage ()
@@ -184,176 +343,4 @@ void PTBApp::AboutApplicationFiles ()
     out->Printf("  %s\n\t-> Log file.", GetLogFileName());
     out->Printf("  %s\n\t-> Default ptb-signature file.", GetDefaultPTBFileName());
     out->Printf("  %s\n\t-> Application directory.", GetApplicationDirectory());
-}
-
-void PTBApp::ParseCmdLine ()
-{
-    //wxApp::argc;
-    //wxApp::argv;
-
-    wxString str;
-
-    for (int i = 1; i < argc; ++i)
-    {
-        str = argv[i];
-
-        if ( str.StartsWith("-h")
-          || str.StartsWith("/h")
-          || str.StartsWith("--help")
-          || str.StartsWith("-?")
-          || str.StartsWith("/?") )
-        {
-            Usage();
-        }
-        else if ( str.StartsWith("-i")
-          || str.StartsWith("/i")
-          || str.StartsWith("--info") )
-        {
-            About();
-        }
-        else if ( str.StartsWith("-o")
-               || str.StartsWith("/o")
-               || str.StartsWith("--output") )
-        {
-            if (argc > i)
-            {
-                ++i;
-                strOut_ = argv[i];
-            }
-        }
-        else if ( str.StartsWith("-") )
-        {
-            Usage();
-        }
-        else
-        {
-            strHash_ = argv[i];
-        }
-    }
-}
-
-void PTBApp::RememberApplicationDirectory ()
-{
-    strApplicationDir_ = /*wxGetCwd() + wxFILE_SEP_PATH + */argv[0].BeforeLast(wxFILE_SEP_PATH);
-
-    if (strApplicationDir_.IsEmpty())
-        strApplicationDir_ = wxGetCwd();
-}
-
-/*static*/ const wxString& PTBApp::GetApplicationDirectory ()
-{
-    return strApplicationDir_;
-}
-
-/*virtual*/ bool PTBApp::OnInit()
-{
-    // remember the application/binary directory
-    RememberApplicationDirectory ();
-
-    // check for the "$HOME/.wxPTB"
-    wxString strHome = wxFileName::GetHomeDir();
-    if ( !(wxDirExists(strHome + wxFILE_SEP_PATH + PTB_CONFIG_DIR)) )
-    {
-        wxSetWorkingDirectory(strHome);
-        wxFileName::Mkdir(PTB_CONFIG_DIR, 0700);
-        wxSetWorkingDirectory(GetApplicationDirectory());
-    }
-
-    //
-    InitLog ();
-
-    //
-    Log(wxString::Format("\n%s started...", GetFullApplicationName()));
-
-    // init random numbers
-    srand((int)(time(NULL))*(int)(this));
-
-    wxSocketBase::Initialize();
-
-    ParseCmdLine();
-
-    // get conf
-    config_.Init();
-
-    // check the log-file size
-    CareLogSize();
-
-    // start the thread
-    PTBTaker* pTaker = new PTBTaker(this);
-
-    //wxSleep(10);
-
-    // create timer
-    pTimer_ = new wxTimer(this, PTB_ID_TIMER_CHECKFOR_EXIT);
-
-    // connect timer
-    Connect
-    (
-        PTB_ID_TIMER_CHECKFOR_EXIT,
-        wxEVT_TIMER,
-        wxTimerEventHandler(PTBApp::OnTimer_CheckForExit),
-        NULL,
-        this
-    );
-
-    // start timer
-    pTimer_->Start(1000, wxTIMER_CONTINUOUS);
-
-    return true;
-/*
-    // wait
-    pTaker->Wait();
-
-    // delete thread
-    delete pTaker;
-
-    return false;*/
-}
-
-
-/*virtual*/ int PTBApp::OnExit()
-{
-    return 0;
-}
-
-
-void PTBApp::OnTimer_CheckForExit (wxTimerEvent& rEvent)
-{
-    if (bDoExit_)
-        Exit();
-}
-
-/*static*/ wxString PTBApp::GetFullApplicationName ()
-{
-    return wxString::Format(_T("%s %d.%d.%d %s"),
-                               PTB_APP_NAME,
-                               PTB_VERSION_MAJOR,
-                               PTB_VERSION_MINOR,
-                               PTB_VERSION_RELEASE,
-                               PTB_VERSION_EXTENSION);
-}
-
-/*static*/ wxString PTBApp::GetVersion ()
-{
-    return wxString::Format("%d.%d.%d %s",
-                            PTB_VERSION_MAJOR,
-                            PTB_VERSION_MINOR,
-                            PTB_VERSION_RELEASE,
-                            PTB_VERSION_EXTENSION);
-}
-
-int PTBApp::GetRandomNumber (int iFrom, int iTo)
-{
-    return rand() % (iTo - iFrom + 1) + iFrom;
-}
-
-wxString PTBApp::GetHash ()
-{
-    return strHash_;
-}
-
-
-wxString PTBApp::GetOut ()
-{
-    return strOut_;
 }

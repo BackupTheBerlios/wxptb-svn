@@ -26,7 +26,7 @@
 #define PTB_APP_NAME                "wxPTB"
 #define PTB_VERSION_MAJOR           0
 #define PTB_VERSION_MINOR           3
-#define PTB_VERSION_RELEASE         0
+#define PTB_VERSION_RELEASE         1
 #define PTB_VERSION_EXTENSION       ""
 #define PTB_AUTHOR                  "Christian Buhtz"
 

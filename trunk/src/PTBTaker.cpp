@@ -29,9 +29,10 @@
 #include <wx/url.h>
 #include <wx/file.h>
 
+/*static*/ PTBTaker* PTBTaker::spInstance_ = NULL;
 
 PTBTaker::PTBTaker (PTBApp* pCaller)
-        : //wxThread(wxTHREAD_JOINABLE),
+        : wxThread(wxTHREAD_DETACHED),
           pCaller_(pCaller),
           lRetrys_(0)
 {
@@ -55,75 +56,44 @@ PTBTaker::PTBTaker (PTBApp* pCaller)
 
     lRetrys_ = pCaller_->Config().GetLoadRetry();
 
+    spInstance_ = this;
+
     Create();
     wxThread::Run();
 }
 
-
 /*virtual*/ PTBTaker::~PTBTaker ()
 {
+    spInstance_ = NULL;
 }
 
-
-wxString PTBTaker::GetNodeContent (const wxString& strNodeName)
+/*virtual*/ void* PTBTaker::Entry()
 {
-    return GetNodeContent(docXml_.GetRoot()->GetChildren(), strNodeName);
-}
-
-wxString PTBTaker::GetNodeContent (wxXmlNode* pNodeRoot, const wxString& strNodeName)
-{
-    wxString strReturn;
-
-    while ( pNodeRoot )
+    if ( Work() == false )
     {
-        if ( pNodeRoot->GetName() == strNodeName )
-            return pNodeRoot->GetNodeContent();
-
-        wxXmlNode* pChilds = pNodeRoot->GetChildren();
-
-        if (pChilds)
+        while ( lRetrys_ > 0 )
         {
-            strReturn = GetNodeContent(pChilds, strNodeName);
-            if ( !(strReturn.IsEmpty()) )
-                return strReturn;
-        }
+            // decrement the retrys
+            --lRetrys_;
 
-        pNodeRoot = pNodeRoot->GetNext();
+            // delay
+            wxSleep(pCaller_->Config().GetLoadDelayInSeconds());
+
+            //
+            PTBApp::Log("Retry...");
+
+            // try again
+            if (Work())
+                break;
+        }
     }
 
-    return strReturn;
+    /* The thread kill itself because it is detached.
+       The application exit because it look in intervalls
+       if the thread is alive. */
+    return NULL;
 }
 
-
-void PTBTaker::WriteHashSig (const wxString& strHash,
-                             const wxString& strOutputFilename /*= wxEmptyString*/)
-{
-    // build the output string
-    wxString strOut =  wxString::Format ("publictimestamp.org/ptb/PTB-%s %s %s\n",
-                                         GetNodeContent("id"),
-                                         strHash,
-                                         GetNodeContent("tstamp"));
-
-    wxString strH = GetNodeContent(strHash);
-    strH = strH.Mid(0, 70) + '\n' + strH.Mid(70);
-
-    strOut = strOut + strH;
-
-    // create output filename
-    wxString strFilename = strOutputFilename;
-    if (strFilename.IsEmpty())
-        strFilename = strHash;
-
-    if ( !(strFilename.EndsWith(PTB_OUT_SUFFIX)) )
-        strFilename = strFilename + PTB_OUT_SUFFIX;
-
-    // create the file and write the string out
-    wxFile file(strFilename, wxFile::write);
-    file.Write(strOut);
-
-    // status message
-    pCaller_->Log(wxString::Format("Store hash \"%s\" in \"%s\".\n--\n%s", strHash, strFilename, strOut));
-}
 
 bool PTBTaker::Work ()
 {
@@ -206,30 +176,62 @@ bool PTBTaker::Work ()
     return true;
 }
 
-/*virtual*/ void* PTBTaker::Entry()
+wxString PTBTaker::GetNodeContent (const wxString& strNodeName)
 {
-    if ( Work() == false )
-    {
-        while ( lRetrys_ > 0 )
-        {
-            // decrement the retrys
-            --lRetrys_;
-
-            // delay
-            wxSleep(pCaller_->Config().GetLoadDelayInSeconds());
-
-            //
-            PTBApp::Log("Retry...");
-
-            // try again
-            if (Work())
-                break;
-        }
-    }
-
-    // exit the thread and the application
-    pCaller_->SetDoExit();
-    //pCaller_->Exit();
-    return NULL;
+    return GetNodeContent(docXml_.GetRoot()->GetChildren(), strNodeName);
 }
 
+wxString PTBTaker::GetNodeContent (wxXmlNode* pNodeRoot, const wxString& strNodeName)
+{
+    wxString strReturn;
+
+    while ( pNodeRoot )
+    {
+        if ( pNodeRoot->GetName() == strNodeName )
+            return pNodeRoot->GetNodeContent();
+
+        wxXmlNode* pChilds = pNodeRoot->GetChildren();
+
+        if (pChilds)
+        {
+            strReturn = GetNodeContent(pChilds, strNodeName);
+            if ( !(strReturn.IsEmpty()) )
+                return strReturn;
+        }
+
+        pNodeRoot = pNodeRoot->GetNext();
+    }
+
+    return strReturn;
+}
+
+
+void PTBTaker::WriteHashSig (const wxString& strHash,
+                             const wxString& strOutputFilename /*= wxEmptyString*/)
+{
+    // build the output string
+    wxString strOut =  wxString::Format ("publictimestamp.org/ptb/PTB-%s %s %s\n",
+                                         GetNodeContent("id"),
+                                         strHash,
+                                         GetNodeContent("tstamp"));
+
+    wxString strH = GetNodeContent(strHash);
+    strH = strH.Mid(0, 70) + '\n' + strH.Mid(70);
+
+    strOut = strOut + strH;
+
+    // create output filename
+    wxString strFilename = strOutputFilename;
+    if (strFilename.IsEmpty())
+        strFilename = strHash;
+
+    if ( !(strFilename.EndsWith(PTB_OUT_SUFFIX)) )
+        strFilename = strFilename + PTB_OUT_SUFFIX;
+
+    // create the file and write the string out
+    wxFile file(strFilename, wxFile::write);
+    file.Write(strOut);
+
+    // status message
+    pCaller_->Log(wxString::Format("Store hash \"%s\" in \"%s\".\n--\n%s", strHash, strFilename, strOut));
+}

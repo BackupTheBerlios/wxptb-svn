@@ -39,8 +39,6 @@ class PTBApp : public wxAppConsole
         ///
         static PTBApp*      pInstance_;
         ///
-        bool                bDoExit_;
-        ///
         wxTimer*            pTimer_;
 
         ///
@@ -86,9 +84,6 @@ class PTBApp : public wxAppConsole
         PTBApp ();
         /// virtual dtor
         virtual ~PTBApp ();
-
-        ///
-        void SetDoExit (bool bDoExit = true);
 
         ///
         static wxString GetFullApplicationName ();
