@@ -1,0 +1,21 @@
+-------------------------------------------------------------------------------
+                             ==== HELP ====
+
+                               -- wxPTB --
+                              Version 0.3.1
+-------------------------------------------------------------------------------
+
+USAGE: wxPTB [hashname] [-o|--output filename] [-h|--help] [-i|--info]
+
+  [hashname]     Specify the hash-name to store as a signature file.
+                 If there is no hash specified a random one is used.
+                 Use "all" to store all hashes in signature files.
+                 The option "-o" is ignored in that case!
+
+  -o|--output    Use to specify a outputfilename. By default it is ptb.sig.
+                 On Unix ptb.sig is stored in $HOME.
+                 On Windows ptb.sig is stored in the current working directory.
+
+  -h|--help      Display this text.
+
+  -i|--info      Display infos about the application.

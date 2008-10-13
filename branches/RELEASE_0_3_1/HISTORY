@@ -1,0 +1,21 @@
+-------------------------------------------------------------------------------
+                             ==== HISTORY ====
+
+                               -- wxPTB --
+                              Version 0.3.1
+-------------------------------------------------------------------------------
+
+*** beginning July 2008 ***
+Start developing.
+
+*** 17th July 2008 ***
+First official release (0.1.0) for windows 32bit.
+
+*** 19th July 2008 ***
+Next release (0.2.0) for windows 32bit.
+
+*** 3rd October 2008 ***
+Release (0.3.0) with unix/linux support.
+
+*** 12th October 2008 ***
+Release (0.3.1) with bugfix for windows build

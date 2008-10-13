@@ -1,0 +1,5 @@
+rm linux-2.6-i386/wxPTB-*-linux-2.6-i386.deb
+rm linux-2.6-i386/wxPTB-*-linux-2.6-i386.rpm
+epm -v -a i386 -f deb wxPTB
+epm -v -a i386 -f rpm wxPTB
+ls -l linux-2.6-i386
