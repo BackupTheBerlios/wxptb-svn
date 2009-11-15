@@ -27,7 +27,7 @@ FILE & DIRECTORY LISTING
  include/       - wxPTB header files
  src/           - wxPTB source files
  graphic/src    - SVG source files for graphic stuff
- BUILD          - informations how to build wxPTB
+ BUILD_README   - informations how to build wxPTB
  TODO           - This is just a little TODO list for wxPTB.
                   Please use the bugtracking-system on BerliOS instead
                   of this file.
