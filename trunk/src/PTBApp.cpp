@@ -114,7 +114,10 @@ PTBApp::PTBApp ()
 void PTBApp::OnTimer_CheckForExit (wxTimerEvent& rEvent)
 {
     if ( PTBTaker::Instance() == NULL )
+    {
+        delete pTimer_;
         Exit();
+    }
 }
 
 void PTBApp::InitLog ()
