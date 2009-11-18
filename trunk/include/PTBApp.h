@@ -61,17 +61,23 @@ class PTBApp : public wxAppConsole
             b) the hash name with ".sig" as prefix if all hashes are used. */
         wxString    strOut_;
 
-        ///
+		/// Display the license information file.
+		void License ();
+		/// Display the usage (commandline options) information.
         void Usage ();
-        ///
+        /// Display the about page.
         void About ();
-        ///
+        /// Display informations about used files.
         void AboutApplicationFiles ();
-        ///
-        void ParseCmdLine ();
+        /** Parse the comandline and display the about page, the usage page
+			or the license information if needed.
+			It return 'false' if an error occured while parsing or if the
+			about or usage page are displayed.
+			If the return value is 'false' the application should be exited
+			without doing anything. */
+        bool ParseCmdLine ();
 
-        ///
-        void RememberApplicationDirectory ();
+        // void RememberApplicationDirectory ();
 
 
         ///
@@ -90,14 +96,15 @@ class PTBApp : public wxAppConsole
         /// return major, minor, release number and extensions as string
         static wxString GetVersion ();
 
-        ///
-        static const wxString& GetApplicationDirectory ();
+        // static const wxString& GetApplicationDirectory ();
         ///
         static const wxString GetLogFileName ();
         ///
         static const wxString GetConfigFileName ();
         ///
         static const wxString GetDefaultPTBFileName ();
+		///
+		static const wxString GetLicenseFileName ();
 
         ///
         static void Log (const wxString& strLogmessage, bool bShowLogMessage = false);

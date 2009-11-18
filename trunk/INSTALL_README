@@ -1,0 +1,57 @@
+-------------------------------------------------------------------------------
+                         ==== INSTALL_README ====
+
+                               -- wxPTB --
+                              Version 0.3.2
+-------------------------------------------------------------------------------
+
+Execute the install routine.
+
+Please feel free to contact me if you need more informations!
+
+FILE & DIRECTORY LISTING
+~~~~~~~~~~~~~~~~~~~~~~~~
+ wxPTB.exe  	- the windows (32bit) binary
+ README         - general instructions
+ INSTALL_README - installation instructions (this file)
+ LICENSE        - license information
+ HISTORY        - history of wxPTB development
+ CREDITS        - all persons, projects and institutions
+                  related to this project
+ HELP           - help file
+ CHANGELOG      - differences between the wxPTB versions
+ graphic/       - icons and other graphic stuff for wxPTB
+
+
+ -- (files created by wxPTB itself) --
+ Please execute wxPTB with the option '-i' to see more details
+ about this files and where they are stored in the current system.
+ 
+ wxPTB.sig		- the signature file
+ wxPTB.conf		- configuration file
+ wxPTB.log		- log file with activities and errors
+
+
+ -- (extra files and directories in the source package) --
+ include/       - wxPTB header files
+ src/           - wxPTB source files
+ graphic/src    - SVG source files for graphic stuff
+ BUILD_README   - informations how to build wxPTB
+ TODO           - This is just a little TODO list for wxPTB.
+                  Please use the bugtracking-system on BerliOS instead
+                  of this file.
+ wxPTB.rc		- resource file for wxPTB
+
+ build/			- compiler and IDE related files
+ |- wxPTB.workspace	- workspace file for the IDE Code::Blocks
+ |- wxPTB.cbp  		- project file for the IDE Code::Blocks
+ |- wxPTB.sln		- workspace/solution file for the IDE MS Visual Studio 2008 Express Edition
+ |- wxPTB.vcproj	- project file for the IDE MS Visual Studio 2008 Express Edition
+ 
+ install/		- for installer and package creation
+ |- wxPTB.list		- package definition for epm (on unix)
+ |- do_package		- script to create DEB- & RPM-Package (on unix)
+ |- wxptb.1.gz		- the man page (on unix)
+ |- do_package_unix			- script to create a rpm-package (need to be modified!)
+ |- do_package_win32.bat	- script to create a package (need to be modified!)
+ |- wxPTB.iss		- script for Inno Setup to create a install routine for windows

@@ -2,10 +2,10 @@
                              ==== HELP ====
 
                                -- wxPTB --
-                              Version 0.3.1
+                              Version 0.3.2
 -------------------------------------------------------------------------------
 
-USAGE: wxPTB [hashname] [-o|--output filename] [-h|--help] [-i|--info]
+USAGE: wxPTB [hashname] [-o|--output filename] [-h|--help] [-i|--info] [-l|--license]
 
   [hashname]     Specify the hash-name to store as a signature file.
                  If there is no hash specified a random one is used.
@@ -19,3 +19,5 @@ USAGE: wxPTB [hashname] [-o|--output filename] [-h|--help] [-i|--info]
   -h|--help      Display this text.
 
   -i|--info      Display infos about the application.
+
+  -l|--license   Display the license information file.

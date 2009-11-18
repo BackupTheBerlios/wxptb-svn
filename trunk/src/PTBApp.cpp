@@ -26,6 +26,8 @@
 #include <wx/url.h>
 #include <wx/filename.h>
 #include <wx/msgout.h>
+#include <wx/stdpaths.h>
+#include <wx/textfile.h>
 
 #include "wxPTB.h"
 #include "PTBTaker.h"
@@ -50,7 +52,7 @@ PTBApp::PTBApp ()
 /*virtual*/ bool PTBApp::OnInit()
 {
     // remember the application/binary directory
-    RememberApplicationDirectory ();
+    // XXX RememberApplicationDirectory ();
 
 #if defined(__UNIX__)
     // check for the "$HOME/.wxPTB"
@@ -67,14 +69,15 @@ PTBApp::PTBApp ()
     InitLog ();
 
     //
-    Log(wxString::Format("\n%s started...", GetFullApplicationName()));
+    Log(wxString::Format("%s started...", GetFullApplicationName()));
 
     // init random numbers
     srand((int)(time(NULL))*(int)(this));
 
     wxSocketBase::Initialize();
 
-    ParseCmdLine();
+    if ( !ParseCmdLine() )
+		Exit();
 
     // get conf
     config_.Init();
@@ -123,14 +126,24 @@ void PTBApp::OnTimer_CheckForExit (wxTimerEvent& rEvent)
 void PTBApp::InitLog ()
 {
     log_.Open(GetLogFileName(), wxFile::write_append);
+	log_.Write("\n\n");
 }
 
 /*static*/ const wxString PTBApp::GetLogFileName ()
 {
-    #if defined(__WXMSW__)
-        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.log";
-    #elif defined(__UNIX__)
-        wxString str = wxFileName::GetHomeDir() + wxFILE_SEP_PATH + PTB_CONFIG_DIR + wxFILE_SEP_PATH + "wxptb.log";
+    #if defined(__WXMSW__) || defined(__UNIX__)
+		wxString str = wxStandardPaths::Get().GetUserConfigDir();
+
+		if ( false == str.EndsWith(wxFILE_SEP_PATH) )
+			str << wxFILE_SEP_PATH;
+
+		str << PTB_APP_NAME;
+
+		if ( false == wxDirExists(str) )
+			wxMkDir(str);
+
+		str << wxFILE_SEP_PATH
+			<< "wxPTB.log";
     #else
         #error "Unsupported plattform! Please contact the project maintainer for support!"
     #endif
@@ -140,10 +153,32 @@ void PTBApp::InitLog ()
 
 /*static*/ const wxString PTBApp::GetConfigFileName ()
 {
-    #if defined(__WXMSW__)
-        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.conf";
-    #elif defined(__UNIX__)
-        wxString str = wxFileName::GetHomeDir() + wxFILE_SEP_PATH + PTB_CONFIG_DIR + wxFILE_SEP_PATH + "wxptb.conf";
+    #if defined(__WXMSW__) || defined(__UNIX__)
+        wxString str = wxStandardPaths::Get().GetUserConfigDir();
+		
+		if ( false == str.EndsWith(wxFILE_SEP_PATH) )
+			str << wxFILE_SEP_PATH;
+
+		str << PTB_APP_NAME;
+
+		if ( false == wxDirExists(str) )
+			wxMkDir(str);
+
+		str << wxFILE_SEP_PATH
+			<< "wxPTB.conf";
+    #else
+        #error "Unsupported plattform! Please contact the project maintainer for support!"
+    #endif
+
+    return str;
+}
+
+/*static*/ const wxString PTBApp::GetLicenseFileName ()
+{
+    #if defined(__WXMSW__) || defined(__UNIX__)
+		wxString str = wxStandardPaths::Get().GetExecutablePath().BeforeLast(wxFILE_SEP_PATH);
+
+		str << wxFILE_SEP_PATH << "LICENSE";
     #else
         #error "Unsupported plattform! Please contact the project maintainer for support!"
     #endif
@@ -153,13 +188,14 @@ void PTBApp::InitLog ()
 
 /*static*/ const wxString PTBApp::GetDefaultPTBFileName ()
 {
-    #if defined(__WXMSW__) || defined(__UNIX__)
-        wxString str = GetApplicationDirectory() + wxFILE_SEP_PATH + "wxPTB.sig";
-    #else
-        #error "Unsupported plattform! Please contact the project maintainer for support!"
-    #endif
+    wxString str = wxStandardPaths::Get().GetAppDocumentsDir();
 
-    return str;
+	if ( false == str.EndsWith(wxFILE_SEP_PATH) )
+		str << wxFILE_SEP_PATH;
+	
+	str << "wxPTB.sig";
+
+	return str;
 }
 
 
@@ -200,7 +236,14 @@ wxString PTBApp::GetOut ()
 
 /*static*/ void PTBApp::Log (const wxString& strLogmessage, bool bShowLogMessage /*= false*/)
 {
-    pInstance_->log_.Write(strLogmessage + '\n');
+	// create message with timestamp
+    wxString str;
+	str << wxDateTime::Now().Format("%Y-%m-%d %H:%M:%S : ")
+		<< strLogmessage
+		<< '\n';
+	
+    pInstance_->log_.Write(str);
+
 
     if (bShowLogMessage)
     {
@@ -225,7 +268,7 @@ void PTBApp::CareLogSize ()
     }
 }
 
-void PTBApp::ParseCmdLine ()
+bool PTBApp::ParseCmdLine ()
 {
     //wxApp::argc;
     //wxApp::argv;
@@ -243,13 +286,22 @@ void PTBApp::ParseCmdLine ()
           || str.StartsWith("/?") )
         {
             Usage();
+			return false;
         }
         else if ( str.StartsWith("-i")
           || str.StartsWith("/i")
           || str.StartsWith("--info") )
         {
             About();
+			return false;
         }
+        else if ( str.StartsWith("-l")
+          || str.StartsWith("/l")
+          || str.StartsWith("--license") )
+		{
+			License();
+			return false;
+		}
         else if ( str.StartsWith("-o")
                || str.StartsWith("/o")
                || str.StartsWith("--output") )
@@ -263,25 +315,52 @@ void PTBApp::ParseCmdLine ()
         else if ( str.StartsWith("-") )
         {
             Usage();
+			return false;
         }
         else
         {
             strHash_ = argv[i];
         }
     }
+
+	return true;
 }
 
-void PTBApp::RememberApplicationDirectory ()
+/*void PTBApp::RememberApplicationDirectory ()
 {
     strApplicationDir_ = argv[0].BeforeLast(wxFILE_SEP_PATH);
 
     if (strApplicationDir_.IsEmpty())
         strApplicationDir_ = wxGetCwd();
-}
+}*/
 
-/*static*/ const wxString& PTBApp::GetApplicationDirectory ()
+/*static* const wxString& PTBApp::GetApplicationDirectory ()
 {
     return strApplicationDir_;
+}*/
+
+void PTBApp::License ()
+{
+	wxMessageOutput* out = wxMessageOutput::Get();
+
+	out->Printf("");
+	out->Printf("=================== LICENSE ===================");
+
+	wxTextFile file;
+
+	file.Open( GetLicenseFileName() );
+
+	if ( file.IsOpened() )
+	{
+		out->Printf(file.GetFirstLine());
+
+		while ( !file.Eof() )
+			out->Printf(file.GetNextLine());
+	}
+	else
+	{
+		out->Printf("(error while loading the license file (%s)", GetLicenseFileName() );
+	}
 }
 
 void PTBApp::Usage ()
@@ -290,7 +369,7 @@ void PTBApp::Usage ()
 
     out->Printf("");
     out->Printf("=== %s === (GPLv3 licensed)", GetFullApplicationName());
-    out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help] [-i|--info]", PTB_APP_NAME);
+	out->Printf("USAGE: %s [hashname] [-o|--output filename] [-h|--help] [-i|--info] [-l|--license]", PTB_APP_NAME);
     out->Printf("");
     out->Printf("  [hashname]     Specify the hash-name to store as a signature file.");
     out->Printf("                 If there is no hash specified a random one is used.");
@@ -303,6 +382,8 @@ void PTBApp::Usage ()
     out->Printf("");
     out->Printf("  -i|--info      Display infos about the application.");
     out->Printf("");
+    out->Printf("  -l|--license   Display the license information file.");
+    out->Printf("");
     AboutApplicationFiles();
 }
 
@@ -311,11 +392,11 @@ void PTBApp::About ()
     wxMessageOutput* out = wxMessageOutput::Get();
 
     out->Printf("%s Copyright (C) 2008 Christian Buhtz <blackfisk@web.de>", GetFullApplicationName());
-    out->Printf("  Website: <wxptb.berlios.de>");
+	out->Printf("  Website: <http://wxptb.berlios.de>");
     out->Printf("  This program comes with ABSOLUTELY NO WARRANTY;");
     out->Printf("  This is free software, and you are welcome to redistribute it");
     out->Printf("  under certain conditions;");
-    out->Printf("  for details see the file LICENSE;");
+    out->Printf("  for details see the file LICENSE or use the option '-l';");
     out->Printf("");
     out->Printf("Developers:");
     out->Printf("  Christian Buhtz");
@@ -326,13 +407,17 @@ void PTBApp::About ()
     out->Printf("used Tools:");
     out->Printf("  Code::Blocks -> open source, cross platform C++ IDE on <www.codeblocks.org>.");
     out->Printf("  MinGW -> GNU based compiler system for Windows on <www.mingw.org>.");
+	out->Printf("  MS Visual Studio 2008 Express Edition -> compiler system and IDE");
     out->Printf("  Inkscape -> open source vector graphics editor on <www.inkscape.org>.");
     out->Printf("  IcoFX -> icon editor on <icofx.ro>.");
+	out->Printf("  Inno Setup -> Create a install routine for windows. <http://www.jrsoftware.org/isinfo.php>");
     out->Printf("");
     out->Printf("Supporters:");
     out->Printf("  Jan Kechel -> Maintainer of <www.publictimestamp.org>.");
     out->Printf("  BerliOS -> free service to Open Source developers on <berlios.de>.");
     out->Printf("  Gmane -> mail-to-news-Gateway and mailing list archive on <gmane.org>.");
+	out->Printf("  QSC -> DSL provider that take a good care of my connection to the world.");
+
     out->Printf("");
     AboutApplicationFiles();
 }
@@ -345,5 +430,5 @@ void PTBApp::AboutApplicationFiles ()
     out->Printf("  %s\n\t-> Configuration file.", GetConfigFileName());
     out->Printf("  %s\n\t-> Log file.", GetLogFileName());
     out->Printf("  %s\n\t-> Default ptb-signature file.", GetDefaultPTBFileName());
-    out->Printf("  %s\n\t-> Application directory.", GetApplicationDirectory());
+	out->Printf("  %s\n\t-> Executable path.", wxStandardPaths::Get().GetExecutablePath());
 }

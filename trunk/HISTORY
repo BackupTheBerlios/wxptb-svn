@@ -2,7 +2,7 @@
                              ==== HISTORY ====
 
                                -- wxPTB --
-                              Version 0.3.1
+                              Version 0.3.2
 -------------------------------------------------------------------------------
 
 *** beginning July 2008 ***
@@ -19,3 +19,6 @@ Release (0.3.0) with unix/linux support.
 
 *** 12th October 2008 ***
 Release (0.3.1) with bugfix for windows build
+
+*** 18th November 2009 ***
+Release (0.3.2) with installer and some improvments.

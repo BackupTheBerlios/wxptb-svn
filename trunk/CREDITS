@@ -2,7 +2,7 @@
                              ==== CREDITS ====
 
                                -- wxPTB --
-                              Version 0.3.1
+                              Version 0.3.2
 -------------------------------------------------------------------------------
 
 Thanks to...
@@ -12,16 +12,17 @@ Thanks to...
 - the wxWidget community and the maintainers
   Cross-Platform GUI Library <http://www.wxwidgets.org>
 
-- There is a random number generator of a unknown develeoper.
-
 - the Code::Blocks community and the maintainers
   The open source, cross platform C++ IDE <http://www.codeblocks.org>
 
 - the MinGW project
   GNU based compiler system for Windows <http://www.mingw.org>
-
+  
 - BerliOS
   free service to Open Source developers <http://www.berlios.de>
+
+- QSC
+  DSL provider that take a good care of my connection to the world
 
 - Inkscape
   Open Source vector graphics editor, using the W3C standard Scalable
@@ -30,6 +31,9 @@ Thanks to...
 - IcoFX
   Icon editor. <http://icofx.ro>
 
-- persons created some stuff that is not in the release-version
+- Inno Setup
+  Create a install routine for windows. <http://www.jrsoftware.org/isinfo.php>
+
+- persons created some stuff that is not in this release-version
 
 - all others I forgot (please mail me)

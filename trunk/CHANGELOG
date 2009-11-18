@@ -2,7 +2,7 @@
                              ==== CHANGELOG ====
 
                                -- wxPTB --
-							   Version 0.3.1
+							   Version 0.3.2
 -------------------------------------------------------------------------------
 
 <<< 0.1.0 >>>
@@ -24,3 +24,9 @@ The first release!
 <<< 0.3.1 >>>
 + modified thread handling
 + bugfixing
+
+<<< 0.3.2 >>>
++ log messages with timestamp
++ option '-l' to display license information
++ more portable way to store log-, config- and sig-file
++ install routine for windows
