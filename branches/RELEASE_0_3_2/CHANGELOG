@@ -1,0 +1,32 @@
+-------------------------------------------------------------------------------
+                             ==== CHANGELOG ====
+
+                               -- wxPTB --
+							   Version 0.3.2
+-------------------------------------------------------------------------------
+
+<<< 0.1.0 >>>
+The first release!
+
+<<< 0.2.0 >>>
++ Retry loading of the wxPTB again if it fails.
++ A config file for
+  - maximum size of log-file
+  - times to retry
+  - waiting delay between retrys
++ info/about available with the option "--info"
+
+<<< 0.3.0 >>>
++ unix/linux support
++ it is a real console application now
++ some micro modifications
+
+<<< 0.3.1 >>>
++ modified thread handling
++ bugfixing
+
+<<< 0.3.2 >>>
++ log messages with timestamp
++ option '-l' to display license information
++ more portable way to store log-, config- and sig-file
++ install routine for windows
