@@ -384,6 +384,7 @@ void PTBApp::About ()
     out->Printf("  Inkscape -> open source vector graphics editor on <www.inkscape.org>.");
     out->Printf("  IcoFX -> icon editor on <icofx.ro>.");
 	out->Printf("  Inno Setup -> Create a install routine for windows. <http://www.jrsoftware.org/isinfo.php>");
+	out->Printf("  7-Zip -> It is a file archiver with a high compression ratio. <http://www.7-zip.org/>");
     out->Printf("");
     out->Printf("Supporters:");
     out->Printf("  Jan Kechel -> Maintainer of <www.publictimestamp.org>.");

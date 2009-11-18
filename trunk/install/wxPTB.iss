@@ -51,13 +51,15 @@ Source: "D:\Garage\projekte\wxPTB\trunk\HELP"; DestDir: "{app}"; Flags: ignoreve
 Source: "D:\Garage\projekte\wxPTB\trunk\HISTORY"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Garage\projekte\wxPTB\trunk\INSTALL_README"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Garage\projekte\wxPTB\trunk\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Garage\projekte\wxPTB\trunk\README"; DestDir: "{app}"; Flags: isreadme
+Source: "D:\Garage\projekte\wxPTB\trunk\README"; DestName: "README.TXT"; DestDir: "{app}"; Flags: isreadme
 Source: "D:\Garage\projekte\wxPTB\trunk\wxPTB_Release Static_msvc.exe"; DestDir: "{app}"; DestName: "wxPTB.exe"; Flags: ignoreversion
-Source: "D:\Garage\projekte\wxPTB\trunk\graphic\logo.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Garage\projekte\wxPTB\trunk\graphic\logo.ico"; DestDir: "{app}\graphic"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,wxPTB}"; Filename: "{uninstallexe}"
+
+
 
 
 
