@@ -96,7 +96,6 @@ class PTBApp : public wxAppConsole
         /// return major, minor, release number and extensions as string
         static wxString GetVersion ();
 
-        // static const wxString& GetApplicationDirectory ();
         ///
         static const wxString GetLogFileName ();
         ///

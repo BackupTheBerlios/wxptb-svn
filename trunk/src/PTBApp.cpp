@@ -51,20 +51,6 @@ PTBApp::PTBApp ()
 
 /*virtual*/ bool PTBApp::OnInit()
 {
-    // remember the application/binary directory
-    // XXX RememberApplicationDirectory ();
-
-#if defined(__UNIX__)
-    // check for the "$HOME/.wxPTB"
-    wxString strHome = wxFileName::GetHomeDir();
-    if ( !(wxDirExists(strHome + wxFILE_SEP_PATH + PTB_CONFIG_DIR)) )
-    {
-        wxSetWorkingDirectory(strHome);
-        wxFileName::Mkdir(PTB_CONFIG_DIR, 0700);
-        wxSetWorkingDirectory(GetApplicationDirectory());
-    }
-#endif
-
     //
     InitLog ();
 
@@ -325,19 +311,6 @@ bool PTBApp::ParseCmdLine ()
 
 	return true;
 }
-
-/*void PTBApp::RememberApplicationDirectory ()
-{
-    strApplicationDir_ = argv[0].BeforeLast(wxFILE_SEP_PATH);
-
-    if (strApplicationDir_.IsEmpty())
-        strApplicationDir_ = wxGetCwd();
-}*/
-
-/*static* const wxString& PTBApp::GetApplicationDirectory ()
-{
-    return strApplicationDir_;
-}*/
 
 void PTBApp::License ()
 {

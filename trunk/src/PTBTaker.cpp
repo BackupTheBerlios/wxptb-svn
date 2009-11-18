@@ -232,6 +232,10 @@ void PTBTaker::WriteHashSig (const wxString& strHash,
     wxFile file(strFilename, wxFile::write);
     file.Write(strOut);
 
-    // status message
-    pCaller_->Log(wxString::Format("Store hash \"%s\" in \"%s\".\n--\n%s", strHash, strFilename, strOut));
+    // create status message
+	wxString strLog = wxString::Format("Store hash \"%s\" in \"%s\".\n--\n%s", strHash, strFilename, strOut);
+	// write to log
+    pCaller_->Log(strLog);
+	// write to screen
+	wxMessageOutput::Get()->Printf(strLog);
 }
